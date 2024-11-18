@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'ameliamae/nodejschatapp'
         GIT_REPO = 'https://github.com/CWEB2116/NodejsChatApp.git'
-        SONAR_SCANNER_HOME = tool 'SonarQube-Installation' // Ensure this matches your SonarQube scanner installation name in Jenkins
+        // Remove SONAR_SCANNER_HOME since we'll use the plugin
     }
 
     stages {
@@ -15,30 +15,30 @@ pipeline {
             }
         }
 
-        // Removed 'Install Dependencies' stage since node_modules are included
+        // Remove 'Install Dependencies' stage since node_modules are included
 
         stage('Snyk Security Scan') {
             steps {
                 echo 'Running Snyk SCA and SAST Scans...'
-                withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
-                    sh 'npm install -g snyk' // Install Snyk CLI
-                    sh 'snyk auth $SNYK_TOKEN'
-                    // SCA Scan (Dependencies)
-                    sh 'snyk test --severity-threshold=high'
-                    // SAST Scan (Code)
-                    sh 'snyk code test --severity-threshold=high'
-                }
+                snykSecurity(
+                    snykInstallation: 'Default', // Use 'Default' unless you have multiple installations
+                    includeSast: true,
+                    snykTokenId: 'SNYK_TOKEN',
+                    severity: 'high',
+                    failOnIssues: true,
+                    monitorProjectOnBuild: false
+                )
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis...'
-                withSonarQubeEnv('Sonarqube-Server') { // Replace with your SonarQube server name in Jenkins
-                    sh "${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                withSonarQubeEnv('YourSonarQubeServerName') { // Replace with your SonarQube server name in Jenkins
+                    sh 'mvn sonar:sonar \
                         -Dsonar.projectKey=NodejsChatApp \
                         -Dsonar.sources=. \
-                        -Dsonar.exclusions=node_modules/**"
+                        -Dsonar.exclusions=node_modules/**'
                 }
             }
         }
