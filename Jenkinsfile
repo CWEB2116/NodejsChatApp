@@ -15,19 +15,14 @@ pipeline {
 
         stage('Snyk Security Scan') {
             steps {
-                echo 'Running Snyk Security Scan with Debugging...'
-                withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'DEBUG_SNYK_API_TOKEN')]) {
-                    sh '''
-                        echo "DEBUG: Using Snyk API Token: $DEBUG_SNYK_API_TOKEN"
-                    '''
-                }
+                echo 'Running Snyk Security Scan using Jenkins Plugin...'
                 snykSecurity(
-                    snykInstallation: 'Default',
-                    snykTokenId: 'SNYK_TOKEN',
-                    projectName: 'NodejsChatApp',
-                    severity: 'high',
-                    targetFile: 'app/package.json',
-                    monitorProjectOnBuild: true
+                    snykInstallation: 'Default',   // Snyk CLI installation name
+                    snykTokenId: 'SNYK_TOKEN',     // Credential ID of type Snyk API Token
+                    projectName: 'NodejsChatApp',  // Project name for tracking in Snyk
+                    severity: 'high',              // Minimum severity threshold
+                    targetFile: 'app/package.json', // Path to package.json for scanning
+                    monitorProjectOnBuild: true    // Enable monitoring in Snyk
                 )
             }
         }
