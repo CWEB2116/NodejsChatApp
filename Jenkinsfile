@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         GIT_REPO = 'https://github.com/CWEB2116/NodejsChatApp.git'
-        DOCKER_IMAGE = 'ameliamae/nodejschatapp' // Docker image name
     }
 
     stages {
@@ -53,9 +52,9 @@ pipeline {
             steps {
                 echo 'Building and Running the Node.js Chat App using Docker Compose...'
                 script {
-                    // Use Docker Compose to build and run the application
+                    // Use Docker Compose to build and run the application locally
                     sh '''
-                        docker compose -f docker-compose.yml up -d --build
+                        docker compose up -d --build
                     '''
                 }
             }
@@ -70,7 +69,7 @@ pipeline {
             script {
                 echo 'Cleaning up Docker resources...'
                 sh '''
-                    docker compose -f docker-compose.yml down || true
+                    docker compose down || true
                     docker image prune -f || true
                 '''
             }
