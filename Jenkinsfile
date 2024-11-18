@@ -68,10 +68,10 @@ pipeline {
         cleanup {
             script {
                 echo 'Cleaning up Docker resources...'
-                sh '''
-                    docker compose down || true
-                    docker image prune -f || true
-                '''
+                //sh '''
+                //    docker compose down || true
+                //    docker image prune -f || true
+                //'''
             }
         }
     }
