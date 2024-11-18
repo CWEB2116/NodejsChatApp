@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         GIT_REPO = 'https://github.com/CWEB2116/NodejsChatApp.git'
-        SONARQUBE_SERVER = 'SonarQube' // Name configured in Jenkins SonarQube settings
+        SONARQUBE_SERVER = 'Sonarqube-Server' // Matches your SonarQube server name in Jenkins
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'Running SonarQube Analysis...'
-                withSonarQubeEnv('SonarQube-Installation') { // Matches SonarQube server name in Jenkins
+                withSonarQubeEnv('Sonarqube-Server') { // Reference your SonarQube server name
                     sh '''
                         echo "Running SonarQube Scanner..."
                         sonar-scanner \
