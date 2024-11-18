@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         GIT_REPO = 'https://github.com/CWEB2116/NodejsChatApp.git'
+        SONARQUBE_SERVER = 'SonarQube' // Name configured in Jenkins SonarQube settings
     }
 
     stages {
@@ -13,18 +14,21 @@ pipeline {
             }
         }
 
-        stage('Snyk Security Scan') {
+        stage('SonarQube Analysis') {
             steps {
-                echo 'Running Snyk Security Scan with failOnIssues set to false...'
-                snykSecurity(
-                    snykInstallation: 'Default',   // Snyk CLI installation name
-                    snykTokenId: 'SNYK_TOKEN',     // Credential ID of type Snyk API Token
-                    projectName: 'NodejsChatApp',  // Project name for tracking in Snyk
-                    severity: 'high',              // Minimum severity threshold
-                    targetFile: 'app/package.json', // Path to package.json for scanning
-                    monitorProjectOnBuild: true,   // Enable monitoring in Snyk
-                    failOnIssues: false            // Allow pipeline to pass despite issues
-                )
+                echo 'Running SonarQube Analysis...'
+                withSonarQubeEnv('SonarQube') { // Matches SonarQube server name in Jenkins
+                    sh '''
+                        echo "Running SonarQube Scanner..."
+                        sonar-scanner \
+                          -Dsonar.projectKey=NodejsChatApp \
+                          -Dsonar.sources=. \
+                          -Dsonar.exclusions=node_modules/** \
+                          -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                          -Dsonar.host.url=$SONAR_HOST_URL \
+                          -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
+                }
             }
         }
     }
