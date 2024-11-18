@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo 'Running Snyk Security Scan with Jenkins Plugin...'
                 snykSecurity(
-                    snykInstallation: 'Default',  // Use 'Default' unless you have a custom installation name
+                    snykInstallation: 'snyk',  // Use 'Default' unless you have a custom installation name
                     snykTokenId: 'SNYK_TOKEN',   // Replace with your API token credential ID
                     projectName: 'NodejsChatApp', // Project name for better tracking
                     severity: 'high',           // Set severity threshold (e.g., 'high', 'critical')
