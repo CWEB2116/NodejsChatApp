@@ -21,7 +21,7 @@ pipeline {
                         def scannerHome = tool 'SonarQube-Installation'
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
-                              -Dsonar.projectKey=NodeJSChatApp \  // Use the existing project key
+                              -Dsonar.projectKey=NodeJSChatApp \
                               -Dsonar.sources=. \
                               -Dsonar.exclusions=node_modules/** \
                               -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
