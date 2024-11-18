@@ -15,6 +15,14 @@ pipeline {
             }
         }
 
+        stage('List Project Files') {
+            steps {
+                echo 'Listing files in the workspace...'
+                sh 'ls -la'
+                sh 'ls -la app'
+            }
+        }
+
         stage('Snyk Security Scan') {
             steps {
                 echo 'Running Snyk Security Scan...'
@@ -27,9 +35,9 @@ pipeline {
                         echo "Authenticating with Snyk..."
                         ./snyk auth $SNYK_TOKEN
 
-                        echo "Running Snyk Test..."
-                        # Run Snyk test with high severity threshold, allow build to pass
-                        ./snyk test --severity-threshold=high || true
+                        echo "Running Snyk Test on app/package.json..."
+                        # Run Snyk test with specified target file in the app folder
+                        ./snyk test app --file=package.json --severity-threshold=high || true
                     '''
                 }
             }
